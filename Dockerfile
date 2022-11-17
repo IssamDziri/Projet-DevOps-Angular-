@@ -1,14 +1,10 @@
-# Build Stage
-FROM node:latest
+#stage 1
+FROM node:12.14 as node
 WORKDIR /app
-COPY package*.json /app/ 
-COPY ./ /app/
-RUN ng build --prod"
-RUN ng build --output-path=dist --prod=true
-
-
-
-# Run Stage
+COPY . .
+RUN npm run build --prod
+#stage 2
 FROM nginx:alpine
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY  /dist/crudtuto-Front  /usr/share/nginx/html
+COPY --from=node /app/dist/* /usr/share/nginx/html
+CMD [ "nginx","-g","daemon off;" ]
+EXPOSE 80
