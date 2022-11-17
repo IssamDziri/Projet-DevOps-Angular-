@@ -1,10 +1,14 @@
-#stage 1
-FROM node:14.21.1 AS node
+# Build Stage
+FROM node:12.20-alpine AS build
 WORKDIR /app
-COPY . .
-RUN npm run build --prod
-#stage 2
-FROM nginx:alpine
-COPY --from=node /app/dist/* /usr/share/nginx/html
-CMD [ "nginx","-g","daemon off;" ]
-EXPOSE 80
+COPY package*.json /app/
+RUN npm install 
+COPY ./ /app/
+RUN node_modules/.bin/ng build --output-path=dist --prod=true
+
+
+
+# Run Stage
+FROM nginx:1.17.1-alpine
+COPY default.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/dist /usr/share/nginx/html
