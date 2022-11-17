@@ -3,6 +3,7 @@ FROM node:latest
 WORKDIR /app
 COPY package*.json /app/ 
 COPY ./ /app/
+RUN ng build --prod"
 RUN ng build --output-path=dist --prod=true
 
 
