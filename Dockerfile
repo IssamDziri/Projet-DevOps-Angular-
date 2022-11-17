@@ -1,5 +1,5 @@
 #stage 1
-FROM node:12.14 as node
+FROM node:14.21.1 AS node
 WORKDIR /app
 COPY . .
 RUN npm run build --prod
